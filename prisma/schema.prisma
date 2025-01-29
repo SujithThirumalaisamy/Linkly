@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  links     Link[]
+}
+
+model Link {
+  id        Int         @id @default(autoincrement())
+  longUrl   String
+  shortUrl  String      @unique
+  qrCode    String
+  userId    Int?
+  expiresAt DateTime?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  clicks    Analytics[]
+  user      User?       @relation(fields: [userId], references: [id])
+}
+
+model Analytics {
+  id        Int      @id @default(autoincrement())
+  linkId    Int
+  country   String?
+  city      String?
+  device    String?
+  os        String?
+  browser   String?
+  timestamp DateTime @default(now())
+  Link      Link     @relation(fields: [linkId], references: [id])
+}
