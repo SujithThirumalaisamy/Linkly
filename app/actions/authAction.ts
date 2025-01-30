@@ -177,7 +177,7 @@ export async function getMe(request: Request) {
 
 // Logout
 
-export async function logout() {
+export async function logoutUser() {
   try {
     const response = NextResponse.json(
       { message: "Logged out Successfully" },

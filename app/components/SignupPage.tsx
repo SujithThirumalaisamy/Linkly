@@ -5,10 +5,14 @@ import React, { useState } from "react";
 import { Eye, Github, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function Signup() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -21,12 +25,22 @@ export default function Signup() {
   const onFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(""); // reset for new submission
 
     try {
       // signup Logic
+      const response = await axios.post(
+        "http://localhost:3000/api/signup",
+        formData
+      );
+      if (response.status === 201) {
+        toast.success("Registration Successful! Welcome to the platform!");
+        // router.push("/");
+      }
+      console.log("Response is", response.data);
       console.log("FormData from SignupPage", formData);
     } catch (error) {
-      setError(true);
+      setError("Failed to register. Please try again");
       console.log("Error During Signup", error);
     } finally {
       setLoading(false);
@@ -107,7 +121,7 @@ export default function Signup() {
       <p className="text-center  text-sm ">
         Already have an account{" "}
         <Link href={"/auth/login"} className="underline ">
-          Sign Up
+          Sign In
         </Link>
       </p>
     </div>

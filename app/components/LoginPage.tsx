@@ -77,7 +77,7 @@ export default function LoginPage() {
           type="submit"
           className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition"
         >
-          {loading ? "Signing Up..." : "Sign Up"}
+          {loading ? "Logiinn..." : "Login"}
         </button>
       </form>
 
