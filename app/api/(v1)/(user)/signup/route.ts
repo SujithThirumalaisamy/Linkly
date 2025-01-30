@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -31,6 +32,24 @@ export async function POST(request: Request) {
 
     const { email, password } = validation.data;
 
+    // check if the email already exist in the db?
+
+    const isEmailExist = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (isEmailExist) {
+      return NextResponse.json(
+        { error: "Email Already Exist" },
+        { status: 409 }
+      );
+    }
+
+    // hash the password
+
+    const salt = await bcrypt.genSaltSync(10);
+    const hashedPassword = await bcrypt.hashSync(password, salt);
+
     // hash the password generate the salt
     // bcrypt the password and then login
     // set cookie during signup
@@ -42,14 +61,14 @@ export async function POST(request: Request) {
     const user = await prisma.user.create({
       data: {
         email,
-        password,
+        password: hashedPassword,
       },
     });
 
     return NextResponse.json(
       {
         message: "User created successfully",
-        user,
+        user: { email: user.email },
       },
       { status: 201 }
     );
