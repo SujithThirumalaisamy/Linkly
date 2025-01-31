@@ -28,7 +28,7 @@ export default function LoginPage() {
     try {
       // login Logic
 
-      const response = await axios.post("http://localhost:3000/api/login");
+      const response = await axios.post("http://localhost:3000/api/login", formData);
       if (response.status === 201) {
         toast.error("Login Successfully");
       }
