@@ -139,8 +139,50 @@ export async function loginUser(request: Request) {
   }
 }
 
-// GetMe
+// GetMe;
 
+// export async function loginUser(request: Request) {
+//   try {
+//     const body = await request.json(); // Extracting email and password from the request
+//     const { email, password } = body;
+
+//     // Your validation logic here
+//     const user = await prisma.user.findUnique({ where: { email } });
+
+//     if (!user) {
+//       return NextResponse.json(
+//         { error: "Invalid Credentials" },
+//         { status: 401 }
+//       );
+//     }
+
+//     const passwordMatch = await bcrypt.compare(password, user.password);
+
+//     if (!passwordMatch) {
+//       return NextResponse.json({ error: "Invalid Password" }, { status: 404 });
+//     }
+
+//     // Generate JWT token and send response
+//     const token = jwt.sign({ email, userId: user.id }, JWT_SECRET, {
+//       expiresIn: "30d",
+//     });
+//     // Set jwt cookie
+//     const response = NextResponse.json(
+//       { message: "Login Successfully", user: { email: user.email }, token },
+//       { status: 200 }
+//     );
+
+//     response.headers.set(
+//       "Set-Cookie",
+//       `jwt=${token}; HttpOnly; Path=/; Max-Age=${
+//         30 * 24 * 60 * 60
+//       }; SameSite=Strict; ${
+//         process.env.NODE_ENV !== "development" ? "Secure" : ""
+//       }`
+//     );
+//     return response;
+//   } catch (error) {}
+// }
 export async function getMe(request: Request) {
   try {
     // get cookie from the jwt

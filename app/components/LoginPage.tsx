@@ -5,10 +5,12 @@ import React, { useState } from "react";
 import { Eye, Github, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -21,12 +23,23 @@ export default function LoginPage() {
   const onFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     try {
-      // signup Logic
+      // login Logic
+
+      const response = await axios.post("http://localhost:3000/api/login");
+      if (response.status === 201) {
+        toast.error("Login Successfully");
+      }
+      console.log("Response data", response.data);
       console.log("FormData from LoginPage", formData);
     } catch (error) {
-      setError(true);
+      if (axios.isAxiosError(error) && error.response) {
+        setError(error.response.data.error || "Something went wrong");
+      } else {
+        setError("Failed to Login. Please try again");
+      }
       console.log("Error During Login", error);
     } finally {
       setLoading(false);
@@ -38,6 +51,7 @@ export default function LoginPage() {
       className="bg-[rgba(255,255,255,0.025)] rounded-[12px] shadow-[0_2px_4px_rgba(0,0,0,0.04)] 
                     ring-1 ring-[rgba(255,255,255,0.025)] flex flex-col max-w-[460px] p-5 gap-4 w-full mx-auto mt-10 justify-center"
     >
+      <ToastContainer />
       <h2 className="text-white text-xl font-semibold text-center">Login</h2>
 
       {/* Email & Password Form */}
@@ -56,7 +70,7 @@ export default function LoginPage() {
         </div>
 
         {/* Error */}
-        {error && <p className="text-red-500">Error message here</p>}
+        {error && <p className="text-red-500">{error}</p>}
 
         <div className="relative flex items-center">
           <Eye className="absolute left-3 text-gray-400 w-5 h-5" />
@@ -71,7 +85,7 @@ export default function LoginPage() {
         </div>
 
         {/* error */}
-        {error && <p className="text-red-500">Error message here</p>}
+        {error && <p className="text-red-500">{error}</p>}
 
         <button
           type="submit"
