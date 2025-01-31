@@ -124,6 +124,12 @@ export async function loginUser(request: Request) {
 
     // Set jwt cookie
 
+    // response.headers.set(
+    //   "Access-Control-Allow-Origin",
+    //   "http://localhost:3000/api/login"
+    // );
+    // response.headers.set("Access-Control-Allow-Credentials", "true");
+
     response.headers.set(
       "Set-Cookie",
       `jwt=${token}; HttpOnly; Path=/; Max-Age=${
@@ -181,7 +187,10 @@ export async function loginUser(request: Request) {
 //       }`
 //     );
 //     return response;
-//   } catch (error) {}
+//   } catch (error) {
+//     console.log("Error While Signin the User", error);
+//     return NextResponse.json({ error: "Failed to Login" }, { status: 500 });
+//   }
 // }
 export async function getMe(request: Request) {
   try {
